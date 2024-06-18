@@ -1,6 +1,6 @@
 const express = require("express");
 const openai = require("openai");
-const config = require("./config.json");
+// const config = require("./config.json");
 
 const app = express();
 const port = 3062;
@@ -14,8 +14,15 @@ app.get("/", (req, res) => {
 app.get("/api/chat", async (req, res) => {
   const message = req.query.message;
   const messagehistory = JSON.parse(req.query.messagehistory);
+  const openaikey = req.query.openaikey;
+
+  if (!openaikey) {
+    res.send({ error: "No OpenAI key provided" });
+    return;
+  }
+
   const openaiApi = new openai.OpenAI({
-    apiKey: config.openaiApiKey,
+    apiKey: openaikey,
   });
 
   console.log(message);
