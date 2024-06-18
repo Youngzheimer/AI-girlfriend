@@ -140,5 +140,62 @@
         <input type="text" placeholder="메시지를 입력하세요">
         <button>전송</button>
     </div>
+
+    <script>
+        var messagehistory = [];
+
+        function message(who, message, typing = false) {
+            const chat = document.querySelector(".chat");
+            const item = document.createElement("div");
+            item.classList.add("item");
+            item.classList.add(who);
+            const content = document.createElement("span");
+            content.classList.add("content");
+            if (typing) content.classList.add("typing");
+            content.innerText = message;
+            item.appendChild(content);
+            chat.appendChild(item);
+            chat.scrollTop = chat.scrollHeight;
+            return item;
+        }
+
+        function newmessage(inputbox) {
+            messagehistory.push({
+                role: "user",
+                content: inputbox.value,
+            });
+            if (messagehistory.length > 10) messagehistory.shift();
+            console.log(inputbox.value);
+            if (inputbox.value === "") return;
+            message("me", inputbox.value);
+            inputbox.value = "";
+            var item = message("you", "", true);
+
+            fetch(`/api/chat?message=${inputbox.value}&messagehistory=${JSON.stringify(messagehistory)}`)
+            .then((res) => res.json())
+            .then((data) => {
+                item.querySelector(".content").innerText = data[0].message.content;
+                item.querySelector(".content").classList.remove("typing");
+                messagehistory.push({
+                    role: "assistant",
+                    content: data[0].message.content,
+                });
+                if (messagehistory.length > 10) messagehistory.shift();
+            });
+
+        }
+
+        const input = document.querySelector(".input input");
+        const button = document.querySelector(".input button");
+        button.addEventListener("click", () => {
+            newmessage(input);
+        });
+
+        input.addEventListener("keydown", (e) => {
+        if (e.keyCode === 13) {
+                newmessage(input);
+            }
+        });
+    </script>
 </body>
 </html>
