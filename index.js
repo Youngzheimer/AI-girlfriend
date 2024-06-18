@@ -3,7 +3,7 @@ const openai = require("openai");
 // const config = require("./config.json");
 
 const app = express();
-const port = 3062;
+const port = 80;
 
 app.use(express.static("public"));
 
@@ -42,10 +42,16 @@ app.get("/api/chat", async (req, res) => {
       },
     ]);
 
-  var ret = await openaiApi.chat.completions.create({
-    messages: msglist,
-    model: "gpt-4o-2024-05-13",
-  });
+  var ret = await openaiApi.chat.completions
+    .create({
+      messages: msglist,
+      model: "gpt-4o-2024-05-13",
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send({ error: err });
+      return;
+    });
 
   console.log(ret);
 

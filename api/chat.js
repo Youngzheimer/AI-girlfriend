@@ -1,11 +1,8 @@
-const express = require("express");
+// api/hello.js
+
 const openai = require("openai");
-const serverless = require("serverless-http");
-// const config = require("./config.json");
 
-const app = express();
-
-app.get("/api/chat", async (req, res) => {
+module.exports = (req, res) => {
   const message = req.query.message;
   const messagehistory = JSON.parse(req.query.messagehistory);
   const openaikey = req.query.openaikey;
@@ -36,14 +33,17 @@ app.get("/api/chat", async (req, res) => {
       },
     ]);
 
-  var ret = await openaiApi.chat.completions.create({
-    messages: msglist,
-    model: "gpt-4o-2024-05-13",
-  });
-
-  console.log(ret);
-
-  res.send(ret.choices);
-});
-
-module.exports.handler = serverless(app);
+  var ret = openaiApi.chat.completions
+    .create({
+      messages: msglist,
+      model: "gpt-4o-2024-05-13",
+    })
+    .catch((err) => {
+      console.error(err);
+      res.send({ error: err });
+    })
+    .then((ret) => {
+      console.log(ret);
+      res.send(ret.choices);
+    });
+};

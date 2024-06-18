@@ -203,7 +203,7 @@
             inputbox.value = "";
             var item = message("you", "", true);
 
-            fetch(`/api/chat?message=${inputbox.value}&messagehistory=${JSON.stringify(messagehistory)}&openaikey=${openaikey.value}`)
+            fetch(`:3001/api/chat?message=${inputbox.value}&messagehistory=${JSON.stringify(messagehistory)}&openaikey=${openaikey.value}`)
             .then((res) => res.json())
             .then((data) => {
                 console.log(data);
