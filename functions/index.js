@@ -4,13 +4,6 @@ const serverless = require("serverless-http");
 // const config = require("./config.json");
 
 const app = express();
-const port = 3062;
-
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
-});
 
 app.get("/api/chat", async (req, res) => {
   const message = req.query.message;
