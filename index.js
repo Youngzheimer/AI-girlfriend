@@ -57,9 +57,9 @@ app.get("/api/chat", async (req, res) => {
 
   if (!ret) {
     res.send({ error: "No response from OpenAI" });
-    return;
+  } else {
+    res.send(ret.choices);
   }
-  res.send(ret.choices);
 });
 
 app.listen(port, () => {
