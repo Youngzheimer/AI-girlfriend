@@ -17,8 +17,7 @@ app.get("/api/chat", async (req, res) => {
   const openaikey = req.query.openaikey;
 
   if (!openaikey) {
-    res.send({ error: "No OpenAI key provided" });
-    return;
+    return res.send({ error: "No OpenAI key provided" });
   }
 
   const openaiApi = new openai.OpenAI({
@@ -49,17 +48,15 @@ app.get("/api/chat", async (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.send({ error: err });
-      return;
+      return res.send({ error: err });
     });
 
   console.log(ret);
 
   if (!ret) {
-    res.send({ error: "No response from OpenAI" });
-  } else {
-    res.send(ret.choices);
+    return res.send({ error: "No response from OpenAI" });
   }
+    return res.send(ret.choices);
 });
 
 app.listen(port, () => {
